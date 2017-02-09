@@ -1,4 +1,4 @@
-package com.zrx.moonagainapplication;
+package com.zrx.moonagain;
 
 import org.junit.Test;
 
