@@ -6,4 +6,21 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+
+    <!--主文字大小-->
+    <dimen name="primaryTextSize">12sp</dimen>
+    <!--次要文字大小-->
+    <dimen name="secondaryTextSize">12sp</dimen>
+    <!--标题文字大小-->
+    <dimen name="titleTextSize">16sp</dimen>
+    <!--子标题文字大小-->
+    <dimen name="subTitleTextSize">16sp</dimen>
+
+    <!--基本边距-->
+    <dimen name="baseMargin">12dp</dimen>
+    <!--标题栏高度-->
+    <dimen name="hTitleBar">48dp</dimen>
+
+
 </resources>

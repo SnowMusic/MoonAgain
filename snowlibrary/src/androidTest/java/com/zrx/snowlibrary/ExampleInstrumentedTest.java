@@ -1,4 +1,4 @@
-package com.zrx.moonagain;
+package com.zrx.snowlibrary;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.zrx.moonagainapplication", appContext.getPackageName());
+        assertEquals("com.zrx.snowlibrary.test", appContext.getPackageName());
     }
 }

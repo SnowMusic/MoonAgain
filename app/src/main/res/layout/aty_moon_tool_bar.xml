@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tool_bar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/hTitleBar"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="@dimen/baseMargin"
+        android:src="@drawable/arrow_left" />
+
+    <TextView
+        android:id="@+id/tv_bar_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/baseMargin"
+        android:maxLines="1"
+        android:maxWidth="50dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/titleTextSize" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/baseMargin"
+        android:layout_marginRight="@dimen/baseMargin"
+        android:layout_toLeftOf="@id/tv_bar_right"
+        android:layout_toRightOf="@id/iv_back"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/titleTextSize" />
+
+</RelativeLayout>
