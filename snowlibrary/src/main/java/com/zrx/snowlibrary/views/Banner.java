@@ -32,6 +32,11 @@ public class Banner extends RelativeLayout {
 
     ArrayList<String> paths = new ArrayList<>();
 
+
+    public Banner(Context context) {
+        this(context,null);
+    }
+
     public Banner(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;

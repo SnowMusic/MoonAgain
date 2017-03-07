@@ -1,6 +1,5 @@
 package com.zrx.moonagain.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -53,7 +52,6 @@ public class NewsFragment extends Fragment {
             tabNamesList.add("哈哈" + i);
             fragments.add(new ChannelFragment());
         }
-
 
         mAdapter = new ChannelAdapter(getFragmentManager(), tabNamesList, fragments);
         vp.setAdapter(mAdapter);

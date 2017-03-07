@@ -4,13 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.zrx.snowlibrary.views.Banner
-        android:id="@+id/banner"
-        android:layout_width="match_parent"
-        android:layout_height="160dp" />
-
-    <android.support.v7.widget.RecyclerView
+    <com.zrx.moonagain.views.NewsRecyclerView
         android:id="@+id/rv_newslist"
+        android:background="@android:color/darker_gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

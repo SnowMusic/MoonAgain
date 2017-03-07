@@ -26,6 +26,7 @@
             android:theme="@style/MyIndicatorColor" />
         <activity android:name=".activities.VideoPlayActivity" />
         <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.NewsDetailActivity"/>
 
     </application>
 
