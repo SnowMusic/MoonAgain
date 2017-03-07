@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
+    <com.zrx.snowlibrary.views.Banner
+        android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="260dp" />
+        android:layout_height="160dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_newslist"

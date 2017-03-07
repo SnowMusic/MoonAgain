@@ -16,7 +16,7 @@ import com.zrx.moonagain.interfaces.CustomApiCallback;
 import com.zrx.moonagain.interfaces.IMoonService;
 import com.zrx.moonagain.utils.IntentUtils;
 import com.zrx.snowlibrary.utils.ClickUtil;
-import com.zrx.snowlibrary.utils.ImageDisplayUtil;
+import com.zrx.snowlibrary.utils.DisplayPictureUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +41,7 @@ public class SplashActivity extends StarBaseAcitivity {
             int what = msg.what;
             if (what != 0) {
                 tvCountdown.setText(what + "s");
-                sendEmptyMessageDelayed(what - 1, 1000);
+                sendEmptyMessageDelayed(what - 1, 100);
             } else {
                 jumpToNext();
             }
@@ -54,7 +54,7 @@ public class SplashActivity extends StarBaseAcitivity {
         setContentView(R.layout.aty_splash);
         ButterKnife.bind(this);
 
-        handler.sendEmptyMessageDelayed(3, 1000);
+        handler.sendEmptyMessageDelayed(3, 100);
 
         getADUrl();
         tvCountdown.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +84,7 @@ public class SplashActivity extends StarBaseAcitivity {
             @Override
             public void success(BaseModel<ADModel> adModelBaseModel, Response response) {
                 super.success(adModelBaseModel, response);
-                ImageDisplayUtil.showPicture(SplashActivity.this, ivAd, adModelBaseModel.getResponse().get(0).getImgurl());
+                DisplayPictureUtil.showPicture(SplashActivity.this, ivAd, adModelBaseModel.getResponse().get(0).getImgurl());
             }
         });
 

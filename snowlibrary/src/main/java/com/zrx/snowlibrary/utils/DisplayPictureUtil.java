@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso;
  * Created by Schnee on 2017/3/6.
  */
 
-public class ImageDisplayUtil {
+public class DisplayPictureUtil {
 
     public static void showPicture(Context context, ImageView iv, String path) {
         Picasso.with(context).load(path).into(iv);
