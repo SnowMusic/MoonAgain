@@ -11,6 +11,9 @@ import com.squareup.picasso.Picasso;
 
 public class DisplayPictureUtil {
 
+    private DisplayPictureUtil() {
+    }
+
     public static void showPicture(Context context, ImageView iv, String path) {
         Picasso.with(context).load(path).into(iv);
     }

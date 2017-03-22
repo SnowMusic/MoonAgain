@@ -9,6 +9,9 @@ import android.util.Log;
 
 public class LogUtils {
 
+    private LogUtils(){
+
+    }
     final static String TAG = "moon";
 
     public static void e(String tag, Object msg) {

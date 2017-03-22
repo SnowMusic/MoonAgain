@@ -8,20 +8,25 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zrx.moonagain.BuildConfig;
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.StarBaseAcitivity;
 import com.zrx.moonagain.dto.ADModel;
 import com.zrx.moonagain.dto.BaseModel;
+import com.zrx.moonagain.dto.VersionModel;
 import com.zrx.moonagain.interfaces.CustomApiCallback;
 import com.zrx.moonagain.interfaces.IMoonService;
+import com.zrx.moonagain.utils.ApiManager;
 import com.zrx.moonagain.utils.IntentUtils;
 import com.zrx.snowlibrary.utils.ClickUtil;
 import com.zrx.snowlibrary.utils.DisplayPictureUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Schnee on 2017/2/20.
@@ -41,7 +46,7 @@ public class SplashActivity extends StarBaseAcitivity {
             int what = msg.what;
             if (what != 0) {
                 tvCountdown.setText(what + "s");
-                sendEmptyMessageDelayed(what - 1, 100);
+                sendEmptyMessageDelayed(what - 1, 1000);
             } else {
                 jumpToNext();
             }
@@ -54,7 +59,7 @@ public class SplashActivity extends StarBaseAcitivity {
         setContentView(R.layout.aty_splash);
         ButterKnife.bind(this);
 
-        handler.sendEmptyMessageDelayed(3, 100);
+        handler.sendEmptyMessageDelayed(3, 1000);
 
         getADUrl();
         tvCountdown.setOnClickListener(new View.OnClickListener() {
@@ -69,24 +74,28 @@ public class SplashActivity extends StarBaseAcitivity {
 
     }
 
+
     private void jumpToNext() {
         startActivity(IntentUtils.toMainActivity(SplashActivity.this));
         finish();
     }
 
     public void getADUrl() {
-        String baseApi = "http://bdapp2.bandao.cn/bandao/api_4_0_0";
 
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(baseApi).build();
-        IMoonService moonService = restAdapter.create(IMoonService.class);
+//        Call<BaseModel<ADModel>> ads = ApiManager.getMoonService().getAD();
+//        ads.enqueue(new CustomApiCallback<BaseModel<ADModel>>() {
+//            @Override
+//            public void onResponse(Call<BaseModel<ADModel>> call, Response<BaseModel<ADModel>> response) {
+//                super.onResponse(call, response);
+//                DisplayPictureUtil.showPicture(SplashActivity.this, ivAd, response.body().getResponse().getImgurl());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BaseModel<ADModel>> call, Throwable t) {
+//                super.onFailure(call, t);
+//            }
+//        });
 
-        moonService.getAD(new CustomApiCallback<BaseModel<ADModel>>() {
-            @Override
-            public void success(BaseModel<ADModel> adModelBaseModel, Response response) {
-                super.success(adModelBaseModel, response);
-                DisplayPictureUtil.showPicture(SplashActivity.this, ivAd, adModelBaseModel.getResponse().get(0).getImgurl());
-            }
-        });
 
     }
 }

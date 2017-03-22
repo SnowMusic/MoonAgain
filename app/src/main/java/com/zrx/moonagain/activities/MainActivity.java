@@ -18,14 +18,22 @@ import android.widget.TextView;
 
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.StarBaseAcitivity;
+import com.zrx.moonagain.dto.DailyNewsListModel;
+import com.zrx.moonagain.dto.VersionModel;
+import com.zrx.moonagain.fragments.DrawerMenuFragment;
 import com.zrx.moonagain.fragments.NewsFragment;
 import com.zrx.moonagain.fragments.WeatherFragment;
 import com.zrx.moonagain.helpers.UserHelper;
+import com.zrx.moonagain.interfaces.CustomApiCallback;
+import com.zrx.moonagain.utils.ApiManager;
 import com.zrx.moonagain.utils.IntentUtils;
 import com.zrx.snowlibrary.utils.ClickUtil;
+import com.zrx.snowlibrary.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class MainActivity extends StarBaseAcitivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -34,6 +42,7 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
     @BindView(R.id.layout_container)
     FrameLayout container;
 
+    DrawerMenuFragment menuFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +52,26 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
 
         initView();
         initFragments();
+        initData();
+    }
+
+    private void initData() {
+
+        Call<DailyNewsListModel> dailyNewsListModelCall = ApiManager.getMoonService().getThemes();
+        dailyNewsListModelCall.enqueue(new CustomApiCallback<DailyNewsListModel>(){
+            @Override
+            public void onResponse(Call<DailyNewsListModel> call, Response<DailyNewsListModel> response) {
+                super.onResponse(call, response);
+                if (response!=null) {
+                    menuFragment.setData(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DailyNewsListModel> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
     }
 
     NewsFragment newsFragment;
@@ -50,16 +79,10 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
     Fragment[] menuFragments = {newsFragment, weatherFragment};
 
     private void initFragments() {
-
         menuFragments[0] = new NewsFragment();
         menuFragments[1] = new WeatherFragment();
         selectFragment(defaultChannelIndex);
-
     }
-
-
-    TextView tv_desc, tv_name, tv_login, tv_download, tv_favo;
-    ImageView iv_portrit;
 
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -70,43 +93,15 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        initNavHeader(navigationView);
-
-        navigationView.setNavigationItemSelectedListener(this);
-
+        menuFragment = (DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.frg_menu);
     }
 
-    private void initNavHeader(NavigationView navigationView) {
-        View headerView = navigationView.getHeaderView(0);
-        tv_desc = (TextView) headerView.findViewById(R.id.tv_desc);
-        tv_name = (TextView) headerView.findViewById(R.id.tv_name);
-        tv_login = (TextView) headerView.findViewById(R.id.tv_login);
-        tv_download = (TextView) headerView.findViewById(R.id.tv_download);
-        tv_favo = (TextView) headerView.findViewById(R.id.tv_favo);
-        iv_portrit = (ImageView) headerView.findViewById(R.id.iv_portrit);
-
-        if (UserHelper.getInstance().hasLogIn()) {
-            tv_desc.setVisibility(View.VISIBLE);
-            tv_name.setVisibility(View.VISIBLE);
-            tv_login.setVisibility(View.GONE);
-        } else {
-            tv_desc.setVisibility(View.GONE);
-            tv_name.setVisibility(View.GONE);
-            tv_login.setVisibility(View.VISIBLE);
-        }
-        tv_login.setOnClickListener(this);
-
-    }
 
     @Override
     public void onClick(View v) {
         if (ClickUtil.isFastClick()) return;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        if (v == tv_login) {
-            startActivity(IntentUtils.toLoginActivity(this));
         }
     }
 
@@ -116,7 +111,9 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (ClickUtil.canFinish()) finish();
+            else ToastUtils.showToast(this, "再按一次退出");
+//            super.onBackPressed();
         }
     }
 

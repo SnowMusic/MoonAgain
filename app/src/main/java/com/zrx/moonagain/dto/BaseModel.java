@@ -1,20 +1,18 @@
 package com.zrx.moonagain.dto;
 
-import java.util.ArrayList;
-
 /**
- * Created by Schnee on 2017/2/16.
+ * Created by Schnee on 2017/3/9.
  */
 
 public class BaseModel<T> {
 
-    private ArrayList<T> response;
+    private T response;
 
-    public ArrayList<T> getResponse() {
-        return response;
+    public void setResponse(T response) {
+        this.response = response;
     }
 
-    public void setResponse(ArrayList<T> response) {
-        this.response = response;
+    public T getResponse() {
+        return response;
     }
 }

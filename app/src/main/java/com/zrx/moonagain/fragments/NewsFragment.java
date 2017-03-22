@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.viewpagerindicator.TabPageIndicator;
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.adapters.ChannelAdapter;
-import com.zrx.moonagain.dto.BaseModel;
+import com.zrx.moonagain.dto.BaseArrayModel;
 import com.zrx.moonagain.dto.ChannelModel;
 import com.zrx.moonagain.interfaces.CustomApiCallback;
 import com.zrx.moonagain.interfaces.IMoonService;
@@ -20,8 +20,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
-import retrofit.client.Response;
 
 /**
  * Created by Schnee on 2017/2/10.
@@ -62,15 +60,15 @@ public class NewsFragment extends Fragment {
 
         String baseApi = "http://bdapp2.bandao.cn/bandao/api_4_0_0";
 
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(baseApi).build();
-        IMoonService moonService = restAdapter.create(IMoonService.class);
-        moonService.getAllChannel(new CustomApiCallback<BaseModel<ChannelModel>>() {
-            @Override
-            public void success(BaseModel<ChannelModel> channelModels, Response response) {
-
-            }
-
-        });
+//        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(baseApi).build();
+//        IMoonService moonService = restAdapter.create(IMoonService.class);
+//        moonService.getChannels(new CustomApiCallback<BaseArrayModel<ChannelModel>>() {
+//            @Override
+//            public void success(BaseArrayModel<ChannelModel> channelModels, Response response) {
+//
+//            }
+//
+//        });
 
         return view;
     }

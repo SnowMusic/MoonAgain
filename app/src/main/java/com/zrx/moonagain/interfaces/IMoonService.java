@@ -2,10 +2,11 @@ package com.zrx.moonagain.interfaces;
 
 import com.zrx.moonagain.dto.ADModel;
 import com.zrx.moonagain.dto.BaseModel;
-import com.zrx.moonagain.dto.ChannelModel;
+import com.zrx.moonagain.dto.DailyNewsListModel;
+import com.zrx.moonagain.dto.VersionModel;
 
-import retrofit.Callback;
-import retrofit.http.GET;
+import retrofit2.Call;
+import retrofit2.http.GET;
 
 /**
  * Created by Schnee on 2017/2/16.
@@ -13,12 +14,14 @@ import retrofit.http.GET;
 
 public interface IMoonService {
 
-    @GET("/channel.php?ctype=all")
-    void getAllChannel(CustomApiCallback<BaseModel<ChannelModel>> channelModels);
+    @GET("start-image/720*1184")
+    Call<BaseModel<ADModel>> getAD();
 
-    @GET("/newslist.php?type=myad")
-    void getAD(CustomApiCallback<BaseModel<ADModel>> adModels);
+    @GET("version/android/2.3.0")
+    Call<VersionModel> getVersion();
 
+    @GET("themes")
+    Call<DailyNewsListModel> getThemes();
 }
 
 
