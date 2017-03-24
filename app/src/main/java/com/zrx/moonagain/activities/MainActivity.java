@@ -1,8 +1,7 @@
 package com.zrx.moonagain.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
+import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -13,20 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.StarBaseAcitivity;
 import com.zrx.moonagain.dto.DailyNewsListModel;
-import com.zrx.moonagain.dto.VersionModel;
+import com.zrx.moonagain.dto.ThemeNewsModel;
 import com.zrx.moonagain.fragments.DrawerMenuFragment;
+import com.zrx.moonagain.fragments.HomePageFragment;
 import com.zrx.moonagain.fragments.NewsFragment;
 import com.zrx.moonagain.fragments.WeatherFragment;
-import com.zrx.moonagain.helpers.UserHelper;
 import com.zrx.moonagain.interfaces.CustomApiCallback;
 import com.zrx.moonagain.utils.ApiManager;
-import com.zrx.moonagain.utils.IntentUtils;
 import com.zrx.snowlibrary.utils.ClickUtil;
 import com.zrx.snowlibrary.utils.ToastUtils;
 
@@ -35,7 +31,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class MainActivity extends StarBaseAcitivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends StarBaseAcitivity implements View.OnClickListener {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -56,14 +52,14 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
     }
 
     private void initData() {
-
+        //获取专题列表
         Call<DailyNewsListModel> dailyNewsListModelCall = ApiManager.getMoonService().getThemes();
-        dailyNewsListModelCall.enqueue(new CustomApiCallback<DailyNewsListModel>(){
+        dailyNewsListModelCall.enqueue(new CustomApiCallback<DailyNewsListModel>() {
             @Override
             public void onResponse(Call<DailyNewsListModel> call, Response<DailyNewsListModel> response) {
                 super.onResponse(call, response);
-                if (response!=null) {
-                    menuFragment.setData(response.body());
+                if (response != null) {
+                    menuFragment.setData(response.body(), onDrawerMenuClickListener);
                 }
             }
 
@@ -74,13 +70,25 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
         });
     }
 
-    NewsFragment newsFragment;
-    WeatherFragment weatherFragment;
-    Fragment[] menuFragments = {newsFragment, weatherFragment};
+    DrawerMenuFragment.OnDrawerMenuClickListener onDrawerMenuClickListener = new DrawerMenuFragment.OnDrawerMenuClickListener() {
+        @Override
+        public void onClick(Integer id) {
+            drawer.closeDrawers();
+            if (id == null) {
+                switchFragment(null, homePageFragment);
+            } else {
+                Call<ThemeNewsModel> themeNewsModelCall = ApiManager.getMoonService().getThemeNews(id);
+                themeNewsModelCall.enqueue(new CustomApiCallback<ThemeNewsModel>() {
+
+                });
+            }
+        }
+    };
+
+    HomePageFragment homePageFragment;
 
     private void initFragments() {
-        menuFragments[0] = new NewsFragment();
-        menuFragments[1] = new WeatherFragment();
+        homePageFragment = new HomePageFragment();
         selectFragment(defaultChannelIndex);
     }
 
@@ -94,6 +102,7 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
         toggle.syncState();
 
         menuFragment = (DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.frg_menu);
+
     }
 
 
@@ -139,43 +148,16 @@ public class MainActivity extends StarBaseAcitivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-//            getFragmentManager().beginTransaction().add(newsFragment, "newsFragment").commit();
-            startActivity(new Intent(MainActivity.this, SplashActivity.class));
-//            selectFragment(0);
-        } else if (id == R.id.nav_gallery) {
-//            getFragmentManager().beginTransaction().add(weatherFragment, "weatherFragment").commit();
-            selectFragment(1);
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
     int currentIndex = -1;
     int defaultChannelIndex = 0;// 默认选中的栏目
 
     private void selectFragment(int index) {
         if (currentIndex == index) return;
-        if (index == defaultChannelIndex && !menuFragments[defaultChannelIndex].isAdded()) {
-            switchFragment(null, menuFragments[defaultChannelIndex]);
-        } else
-            switchFragment(menuFragments[currentIndex], menuFragments[index]);
+        if (index == defaultChannelIndex) {
+            switchFragment(null, menuFragment);
+        }
+//        else
+//            switchFragment(menuFragments[currentIndex], menuFragments[index]);
         currentIndex = index;
     }
 

@@ -1,8 +1,8 @@
 package com.zrx.moonagain.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +14,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Schnee on 2017/3/6.
+ * Created by Schnee on 2017/3/23.
  */
 
-public class ChannelFragment extends MoonBaseFragment {
+public class NewsListFragment extends MoonBaseFragment {
 
-    @BindView(R.id.rv_newslist)
-    RecyclerView rvNewslist;
+    Context context;
+//    @BindView(R.id.rcl_news_list)
+//    NewsRecyclerView rclNewsList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.frg_channel, null);
-        ButterKnife.bind(this, view);
+        context = getActivity();
+        View view = LayoutInflater.from(context).inflate(R.layout.frg_news_list, null);
+        ButterKnife.bind(this, super.onCreateView(inflater, container, savedInstanceState));
 
         return view;
     }

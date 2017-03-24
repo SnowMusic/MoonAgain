@@ -46,7 +46,7 @@ public class SplashActivity extends StarBaseAcitivity {
             int what = msg.what;
             if (what != 0) {
                 tvCountdown.setText(what + "s");
-                sendEmptyMessageDelayed(what - 1, 1000);
+                sendEmptyMessageDelayed(what - 1, 300);
             } else {
                 jumpToNext();
             }

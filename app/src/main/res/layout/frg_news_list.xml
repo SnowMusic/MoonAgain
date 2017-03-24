@@ -5,9 +5,9 @@
     android:orientation="vertical">
 
     <com.zrx.moonagain.views.NewsRecyclerView
-        android:id="@+id/rv_newslist"
-        android:background="@android:color/darker_gray"
+        android:id="@+id/rcl_news_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="#fff" />
 
 </LinearLayout>

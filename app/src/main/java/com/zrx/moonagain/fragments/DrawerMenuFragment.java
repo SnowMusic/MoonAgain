@@ -8,24 +8,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zrx.moonagain.MoonBaseFragment;
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.dto.DailyNewsListModel;
 import com.zrx.moonagain.views.MenuHeaderView;
-import com.zrx.snowlibrary.utils.ClickUtil;
 import com.zrx.snowlibrary.utils.ListUtil;
 import com.zrx.snowlibrary.utils.StringUtils;
-import com.zrx.snowlibrary.utils.ToastUtils;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
+ * 抽屉界面
  * Created by Schnee on 2017/3/22.
  */
 
@@ -35,8 +34,6 @@ public class DrawerMenuFragment extends MoonBaseFragment {
     RecyclerView rclMenu;
     @BindView(R.id.header_view)
     MenuHeaderView headerView;
-    @BindView(R.id.tv_themes_header)
-    TextView tv_themes_header;
 
     ArrayList<DailyNewsListModel.OthersBean> others = new ArrayList<>();
     MenuAdapter adapter;
@@ -49,82 +46,101 @@ public class DrawerMenuFragment extends MoonBaseFragment {
         ButterKnife.bind(this, menuView);
 
         adapter = new MenuAdapter();
-        rclMenu = (RecyclerView) menuView.findViewById(R.id.rcl_menu);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         rclMenu.setLayoutManager(manager);
         rclMenu.setAdapter(adapter);
-        tv_themes_header.setSelected(true);
+        //recyclerview 的child和adapter中的child粘附时机有区别
+        rclMenu.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (selectedIndex == -1) {
+                    changeSelectedStatus(0);
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
+        });
         return menuView;
     }
 
-    public void setData(DailyNewsListModel model) {
+    public void setData(DailyNewsListModel model, OnDrawerMenuClickListener menuClickListener) {
         if (ListUtil.isEmpty(model.getOthers())) return;
+        this.onDrawerMenuClickListener = menuClickListener;
         others.clear();
         others.addAll(model.getOthers());
         adapter.notifyDataSetChanged();
-    }
-
-    @OnClick(R.id.tv_themes_header)
-    public void onClick() {
-        if (ClickUtil.isFastClick()) return;
-        changeSelectedStatus(-1);
     }
 
     private int selectedIndex = -1;
 
     private void changeSelectedStatus(int position) {
         if (position == selectedIndex) return;
-        if (selectedIndex == -1) {
-            tv_themes_header.setSelected(false);
-        } else rclMenu.getChildAt(selectedIndex).setSelected(false);
-
-        if (position == -1) tv_themes_header.setSelected(true);
-        else rclMenu.getChildAt(position).setSelected(true);
+        if (selectedIndex != -1)
+            rclMenu.getChildAt(selectedIndex).setSelected(false);
+        rclMenu.getChildAt(position).setSelected(true);
+        if (position == 0) onDrawerMenuClickListener.onClick(null);
+        else
+            onDrawerMenuClickListener.onClick(others.get(position).getId());
         selectedIndex = position;
+
     }
 
-    private class MenuAdapter extends RecyclerView.Adapter<MenuVH> {
+    OnDrawerMenuClickListener onDrawerMenuClickListener;
+
+    private class MenuAdapter extends RecyclerView.Adapter {
 
         @Override
-        public MenuVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.vh_menu_items, null);
-            return new MenuVH(itemView);
+        public int getItemViewType(int position) {
+            return position == 0 ? 0 : 1;
         }
 
         @Override
-        public void onBindViewHolder(MenuVH holder, final int position) {
-    //Todo
-            for (int i = 0; i < followThemesId.size(); i++) {
-                int id = others.get(position).getId();
-                if (id == followThemesId.get(i))
-                    holder.iv_arrow.setImageResource(R.drawable.menu_follow);
-                else holder.iv_arrow.setImageResource(R.drawable.menu_arrow);
-            }
-            holder.tv_theme.setText(StringUtils.nullToEmpty(others.get(position).getName()));
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == 0) {
+                return new TitleVH(LayoutInflater.from(getActivity()).inflate(R.layout.vh_drawer_menu_tv_home_page, null));
+            } else
+                return new MenuVH(LayoutInflater.from(getActivity()).inflate(R.layout.vh_menu_items, null));
+        }
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+            if (position != 0) {
+                MenuVH holder = (MenuVH) viewHolder;
+//            //Todo
+//            for (int i = 0; i < followThemesId.size(); i++) {
+//                int id = others.get(position).getId();
+//                if (id == followThemesId.get(i))
+//                    holder.iv_arrow.setImageResource(R.drawable.menu_follow);
+//                else holder.iv_arrow.setImageResource(R.drawable.menu_arrow);
+//            }
+                holder.tv_theme.setText(StringUtils.nullToEmpty(others.get(position - 1).getName()));
+
+                holder.iv_arrow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        refreshFollowStatus(position);
+                    }
+
+                });
+            }
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtils.showToast(getActivity(), "" + position);
                     changeSelectedStatus(position);
 
                 }
             });
-
-            holder.iv_arrow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    refreshFollowStatus(position);
-                }
-
-            });
-
         }
 
         @Override
         public int getItemCount() {
-            return others.size();
+            if (ListUtil.isNotEmpty(others))
+                return others.size() + 1;
+            else return 0;
         }
     }
 
@@ -146,4 +162,15 @@ public class DrawerMenuFragment extends MoonBaseFragment {
         }
     }
 
+    class TitleVH extends RecyclerView.ViewHolder {
+
+        public TitleVH(View itemView) {
+            super(itemView);
+            itemView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    public interface OnDrawerMenuClickListener {
+        void onClick(Integer id);
+    }
 }

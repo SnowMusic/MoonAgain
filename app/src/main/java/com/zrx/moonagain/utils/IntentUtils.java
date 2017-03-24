@@ -13,6 +13,8 @@ import com.zrx.moonagain.activities.NewsDetailActivity;
 
 public class IntentUtils {
 
+    public static final String EXTRA_NEWS_ID = "newsId";
+
     public static Intent toMainActivity(Context ctx) {
         return new Intent(ctx, MainActivity.class);
     }
@@ -21,7 +23,9 @@ public class IntentUtils {
         return new Intent(ctx, LoginActivity.class);
     }
 
-    public static Intent toNewsDetailActivity(Context ctx) {
-        return new Intent(ctx, NewsDetailActivity.class);
+    public static Intent toNewsDetailActivity(Context ctx, int id) {
+        Intent intent = new Intent(ctx, NewsDetailActivity.class);
+        intent.putExtra(EXTRA_NEWS_ID, id);
+        return intent;
     }
 }

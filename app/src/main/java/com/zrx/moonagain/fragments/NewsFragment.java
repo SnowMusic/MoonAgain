@@ -11,10 +11,6 @@ import android.view.ViewGroup;
 import com.viewpagerindicator.TabPageIndicator;
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.adapters.ChannelAdapter;
-import com.zrx.moonagain.dto.BaseArrayModel;
-import com.zrx.moonagain.dto.ChannelModel;
-import com.zrx.moonagain.interfaces.CustomApiCallback;
-import com.zrx.moonagain.interfaces.IMoonService;
 
 import java.util.ArrayList;
 
@@ -48,7 +44,7 @@ public class NewsFragment extends Fragment {
 
         for (int i = 0; i < 8; i++) {
             tabNamesList.add("哈哈" + i);
-            fragments.add(new ChannelFragment());
+            fragments.add(new HomePageFragment());
         }
 
         mAdapter = new ChannelAdapter(getFragmentManager(), tabNamesList, fragments);

@@ -1,6 +1,7 @@
-package com.zrx.snowlibrary.views;
+package com.zrx.moonagain.views;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
@@ -9,15 +10,16 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
+import com.zrx.moonagain.dto.LatestNewsModel;
 import com.zrx.snowlibrary.R;
-import com.zrx.snowlibrary.utils.DisplayPictureUtil;
+import com.zrx.snowlibrary.utils.ListUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自定义banner
@@ -30,11 +32,11 @@ public class Banner extends RelativeLayout {
     ViewPager viewpager;
     RadioGroup indicator;
 
-    ArrayList<String> paths = new ArrayList<>();
+    ArrayList<LatestNewsModel.StoriesBean> beanList = new ArrayList<>();
 
 
     public Banner(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public Banner(Context context, AttributeSet attrs) {
@@ -50,6 +52,7 @@ public class Banner extends RelativeLayout {
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
             @Override
@@ -69,18 +72,21 @@ public class Banner extends RelativeLayout {
     }
 
     ArrayList<RadioButton> buttons = new ArrayList<>();
-    ArrayList<ImageView> imageViews = new ArrayList<>();
+    ArrayList<BannerContentView> imageViews = new ArrayList<>();
 
-    public void setData(ArrayList<String> paths) {
-        this.paths = paths;
+    public void setData(List<LatestNewsModel.StoriesBean> storiesBeanList) {
+        if (ListUtil.isEmpty(storiesBeanList)) return;
+
+        beanList.clear();
+        beanList.addAll(storiesBeanList);
+
         viewpager.getAdapter().notifyDataSetChanged();
         buttons.clear();
         imageViews.clear();
-        for (int i = 0; i < paths.size(); i++) {
+        for (int i = 0; i < beanList.size(); i++) {
             RadioButton button = radioButton();
             buttons.add(button);
             indicator.addView(button);
-            imageViews.add(bannerView());
         }
         buttons.get(0).setChecked(true);
         handler.sendEmptyMessageDelayed(0, 3000);
@@ -91,7 +97,7 @@ public class Banner extends RelativeLayout {
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == paths.size() - 1) {
+            if (msg.what == beanList.size() - 1) {
                 viewpager.setCurrentItem(0);
             } else {
                 viewpager.setCurrentItem(currentIndex + 1);
@@ -111,7 +117,7 @@ public class Banner extends RelativeLayout {
 
         @Override
         public int getCount() {
-            return paths.size();
+            return beanList.size();
         }
 
         @Override
@@ -121,10 +127,11 @@ public class Banner extends RelativeLayout {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView view = imageViews.get(position);
-            DisplayPictureUtil.showPicture(ctx, view, paths.get(position));
-            container.addView(view);
-            return view;
+            BannerContentView bannerContentView = new BannerContentView(ctx);
+            bannerContentView.setData(beanList.get(position).getTitle(), beanList.get(position).getImage());
+            imageViews.add(bannerContentView);
+            container.addView(bannerContentView);
+            return bannerContentView;
         }
 
         @Override
@@ -133,10 +140,4 @@ public class Banner extends RelativeLayout {
         }
     }
 
-    private ImageView bannerView() {
-        ImageView iv = new ImageView(ctx);
-        iv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        return iv;
-    }
 }
