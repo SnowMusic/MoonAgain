@@ -1,9 +1,16 @@
 package com.zrx.moonagain.activities;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.zrx.moonagain.MoonApplication;
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.StarBaseAcitivity;
 import com.zrx.moonagain.dto.DailyNewsListModel;
@@ -70,18 +78,54 @@ public class MainActivity extends StarBaseAcitivity implements View.OnClickListe
         });
     }
 
+    public static boolean hasPermission(String permissionType) {
+        int hasWriteContactsPermission = ContextCompat.checkSelfPermission(MoonApplication.instance, permissionType);
+        return hasWriteContactsPermission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean hasAppPermission(String... permissions) {
+        for (String p : permissions) {
+            if (!hasPermission(p)) return false;
+        }
+        return true;
+    }
+
+    public static void getPermission(Activity aty, int requestCode, String... permissions) {
+        ActivityCompat.requestPermissions(aty, permissions, requestCode);
+    }
+
+    public static final int SHARE_REQUEST_CODE = 111;
+
+    public static boolean needGetSharePermission(Activity context) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.SET_DEBUG_APP, Manifest.permission.SYSTEM_ALERT_WINDOW, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_APN_SETTINGS};
+            if (hasAppPermission(mPermissionList)) {
+                return false;
+            } else {
+                getPermission(context, SHARE_REQUEST_CODE, mPermissionList);
+                return true;
+            }
+        }
+        return false;
+    }
+
     DrawerMenuFragment.OnDrawerMenuClickListener onDrawerMenuClickListener = new DrawerMenuFragment.OnDrawerMenuClickListener() {
         @Override
         public void onClick(Integer id) {
             drawer.closeDrawers();
-            if (id == null) {
-                switchFragment(null, homePageFragment);
-            } else {
-                Call<ThemeNewsModel> themeNewsModelCall = ApiManager.getMoonService().getThemeNews(id);
-                themeNewsModelCall.enqueue(new CustomApiCallback<ThemeNewsModel>() {
-
-                });
+            if ( !needGetSharePermission(MainActivity.this)){
+                ToastUtils.showToast(MainActivity.this,"权限已经获取");
             }
+
+
+//            if (id == null) {
+//                switchFragment(null, homePageFragment);
+//            } else {
+//                Call<ThemeNewsModel> themeNewsModelCall = ApiManager.getMoonService().getThemeNews(id);
+//                themeNewsModelCall.enqueue(new CustomApiCallback<ThemeNewsModel>() {
+//
+//                });
+//            }
         }
     };
 
@@ -103,6 +147,19 @@ public class MainActivity extends StarBaseAcitivity implements View.OnClickListe
 
         menuFragment = (DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.frg_menu);
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == SHARE_REQUEST_CODE) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+            }
+            ToastUtils.showToast(MainActivity.this,"权限已经获取");
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 

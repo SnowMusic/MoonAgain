@@ -8,25 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zrx.moonagain.BuildConfig;
 import com.zrx.moonagain.R;
 import com.zrx.moonagain.StarBaseAcitivity;
-import com.zrx.moonagain.dto.ADModel;
-import com.zrx.moonagain.dto.BaseModel;
-import com.zrx.moonagain.dto.VersionModel;
-import com.zrx.moonagain.interfaces.CustomApiCallback;
-import com.zrx.moonagain.interfaces.IMoonService;
-import com.zrx.moonagain.utils.ApiManager;
 import com.zrx.moonagain.utils.IntentUtils;
 import com.zrx.snowlibrary.utils.ClickUtil;
-import com.zrx.snowlibrary.utils.DisplayPictureUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Schnee on 2017/2/20.
@@ -82,6 +70,8 @@ public class SplashActivity extends StarBaseAcitivity {
 
     public void getADUrl() {
 
+
+
 //        Call<BaseModel<ADModel>> ads = ApiManager.getMoonService().getAD();
 //        ads.enqueue(new CustomApiCallback<BaseModel<ADModel>>() {
 //            @Override
@@ -99,3 +89,8 @@ public class SplashActivity extends StarBaseAcitivity {
 
     }
 }
+
+
+
+
+
